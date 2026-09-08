@@ -1,4 +1,4 @@
-use clap::{ Parser, arg, command, ArgGroup };
+use clap::{ Parser, arg };
 
 #[derive(Parser, Debug)]
 #[command(name = "strmul", about = "CLI-tool to multiply strings")]
@@ -6,15 +6,23 @@ struct Args {
     string: String,
     count: usize,
 
+    #[arg(long, short)]
+    join: Option<String>,
+
     #[arg(long)]
     head: bool,
 }
 
 fn main() {
     let args=  Args::parse();
-    if args.head {
-        for _ in 0..args.count { println!("{}", args.string) }
-    } else {
-        for _ in 0..args.count { print!("{}", args.string) }
+    
+    let mut string = args.string;
+    if let Some(join) = args.join {
+        string += join.as_str();
     }
+    if args.head {
+        string += "\n";
+    }
+    
+    print!("{}", string.repeat(args.count));
 }
